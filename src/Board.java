@@ -58,8 +58,8 @@ public class Board extends JComponent{
                 int yy = e.getY() - CELL_SIZE / 2;
                 int x = (xx + CELL_SIZE / 2) / CELL_SIZE;
                 int y = (yy + CELL_SIZE / 2) / CELL_SIZE;
-                if (x >= 0 && x < 19 && y >= 0 && y < 19 && x * CELL_SIZE - CIRCLE_RADIUS <= px && x * CELL_SIZE + CIRCLE_RADIUS >= px &&
-                        y * CELL_SIZE - CIRCLE_RADIUS <= py && y * CELL_SIZE + CIRCLE_RADIUS >= py)
+                if (x >= 0 && x < 19 && y >= 0 && y < 19 && x * CELL_SIZE - CIRCLE_RADIUS <= xx && x * CELL_SIZE + CIRCLE_RADIUS >= xx &&
+                        y * CELL_SIZE - CIRCLE_RADIUS <= yy && y * CELL_SIZE + CIRCLE_RADIUS >= yy)
                     if (ck!=null) {
                         	if(ck.check(x, y, points))
                         		Board.this.repaint();
@@ -93,8 +93,12 @@ public class Board extends JComponent{
         }
     }
     
-    public void paint(int x, int y, Map<Point, Integer> points){
-    	
+    public Check getCheck(){
+    	return ck;
+    }
+    
+    public void setCheck(Check ck){
+    	this.ck=ck;
     }
 	
     public interface Check {

@@ -35,7 +35,7 @@ public class Listener extends Thread{
                     if (data.startsWith("Start the game by ")) {
                         String[] parts = data.split(" ",18);
                         if (parts.length > 1)
-                            MessageBus.getInstance().getOrCreateChannel("DISCOVERY").put(new Rivals());
+                            MessageBus.getMessageBus().getOrCreateChannel("DISCOVERY").put(new Rivals(parts[1], packet.getAddress()));
                     }
                 } catch (SocketTimeoutException ignored) {
 
