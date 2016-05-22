@@ -4,15 +4,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -60,6 +66,30 @@ public class FindRivalFrame extends JFrame{
 							System.exit(0);
 						}
 					});
+					Thread handlerThread=new Thread(new Thread("message-thread"){
+		        		@Override
+		        		public void run() {
+		        			// TODO Auto-generated method stub
+		        			Thread handler=new Broadcast("Start the game by "+username);
+		        			handler.setDaemon(true);
+		        			handler.start();
+		        			try{
+		        				Board gameFrame=new Board();
+			        			gameFrame.setTurn(true);
+			        			gameFrame.setVisible(true);
+			        			gameFrame.start();
+			        			waitDialog.setVisible(false);
+			        			waitDialog.dispose();
+		        			}catch (InterruptedException ignored) {
+		        				
+	                        }
+		        			handler.interrupt();
+		        		}
+		        	});
+					 handlerThread.setDaemon(true);
+					 handlerThread.start();
+					 FindRivalFrame.this.setVisible(false);
+					 waitDialog.setVisible(true);
 				}
 			});
         	joinButton.addActionListener(new ActionListener() {
@@ -71,8 +101,46 @@ public class FindRivalFrame extends JFrame{
 						return;
 					final WaitForConnectionDialog waitDialog=new WaitForConnectionDialog(FindRivalFrame.this, "Waiting for connection...");
 					waitDialog.setModal(true);
-					Thread clientThread=new ClientThread();
-					
+					Thread clientThread=new ClientThread("client-thread",rivalTobe.getAddress());
+					clientThread.setDaemon(true);
+					clientThread.start();
+					Thread handlerThread=new Thread(new Thread("join-thread"){
+		        		@Override
+		        		public void run() {
+		        			// TODO Auto-generated method stub
+		        			try {
+	                            final Object respond = MessageBus.getMessageBus().waitForChannel("OK");
+	                            System.err.println(respond);
+	                            if (respond instanceof Exception) {
+	                                SwingUtilities.invokeLater(new Runnable() {
+	                                    @Override
+	                                    public void run() {
+	                                        JOptionPane.showMessageDialog(FindRivalFrame.this, ((Exception) respond).getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	                                        waitDialog.setVisible(false);
+	                                    }
+	                                });
+	                            } else if ("SUCCESSFUL".equals((String) respond)) {
+	                                SwingUtilities.invokeLater(new Runnable() {
+	                                    @Override
+	                                    public void run() {
+	                                        if (threadGroup != null)
+	                                            threadGroup.interrupt();
+	                                        waitDialog.setVisible(false);
+	                                        Board gameFrame = new Board();
+	                                        FindRivalFrame.this.setVisible(false);
+	                                        gameFrame.setLocationRelativeTo(null);
+	                                        gameFrame.setVisible(true);
+	                                        gameFrame.start();
+	                                    }
+	                                });
+	                            }
+	                        } catch (InterruptedException ignored) {
+	                        }
+		        		}
+		        	});
+					handlerThread.setDaemon(true);
+					handlerThread.start();
+					waitDialog.setVisible(true);
 				}
 			});
         	buttonPanel.add(createButton);
@@ -96,15 +164,59 @@ public class FindRivalFrame extends JFrame{
                 }
             });
         	add(new JScrollPane(list),BorderLayout.CENTER);
-        	Thread handlerThread=new Thread(new Thread("message-thread"){
+        	pack();
+        	setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        	setLocationRelativeTo(null);
+        	setVisible(true);
+        	process();
+		}
+        
+        private void process(){
+        	threadGroup=new ThreadGroup("thread-group");
+        	Thread listener=new Listener(threadGroup,"listener");
+        	listener.setDaemon(true);
+        	listener.start();
+        	final Map<Rivals,Long> timeToTrace=new LinkedHashMap<>();
+        	Thread hander=new Thread(threadGroup,"handler"){
         		@Override
         		public void run() {
         			// TODO Auto-generated method stub
-        			
+        			while(!this.isInterrupted()){
+        				try{
+        					Rivals rival=(Rivals)MessageBus.getMessageBus().waitForChannel("Seeking");
+        					synchronized (timeToTrace) {
+								timeToTrace.put(rival,(new Date()).getTime());
+							}
+        				}catch(InterruptedException ignored){
+        					return ;
+        				}
+        			}
         		}
-        	});
-        	pack();
-        	setVisible(true);
-        	
-		}
+        	};
+        	hander.setDaemon(true);
+        	hander.start();
+        	Thread fetcher=new Thread(threadGroup,"fetcher"){
+        		@Override
+        		public void run() {
+        			// TODO Auto-generated method stub
+        			while(!this.isInterrupted()){
+        				model.clear();
+        				synchronized (timeToTrace) {
+							for(Map.Entry<Rivals,Long> entry: timeToTrace.entrySet()){
+								if((new Date()).getTime()-entry.getValue()<20000){
+									model.addElement(entry.getKey());
+								}
+							}
+						}
+        				try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ignored) {
+                            return;
+                        }
+        			}
+        		}
+        	};
+        	fetcher.setDaemon(true);
+        	fetcher.start();
+        }
 }
