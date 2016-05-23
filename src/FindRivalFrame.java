@@ -36,14 +36,18 @@ public class FindRivalFrame extends JFrame{
 			// TODO Auto-generated constructor stub
         	super("Seeking your rival");
         	this.username=username;
-        	userLabel.setText(username);
-        	vsLabel.setText("VS");
+        	userLabel=new JLabel(username);
+            vsLabel=new JLabel("VS");
+            rivalLabel=new JLabel();
+            titlePanel=new JPanel();
         	titlePanel.setLayout(new GridLayout(1, 3));
         	titlePanel.add(userLabel);
         	titlePanel.add(vsLabel);
         	titlePanel.add(rivalLabel);
+        	buttonPanel=new JPanel();
         	buttonPanel.setLayout(new GridLayout(1,3));
-        	createButton.setText("Create");
+        	createButton=new JButton("Create");
+            joinButton=new JButton("Join");
         	createButton.addActionListener(new ActionListener() {
 				
 				@Override
@@ -56,16 +60,7 @@ public class FindRivalFrame extends JFrame{
 					Thread serverThread=new ServerThread();
 					serverThread.setDaemon(true);
 					serverThread.start();
-					final WaitForConnectionDialog waitDialog=new WaitForConnectionDialog(FindRivalFrame.this, "Wait for another player to join");
-					waitDialog.addWindowListener(new WindowAdapter() {
-						@Override
-						public void windowClosed(WindowEvent e) {
-							// TODO Auto-generated method stub
-							super.windowClosed(e);
-							System.err.println("Exit at the waiting process");
-							System.exit(0);
-						}
-					});
+					final WaitForConnectionDialog waitDialog=new WaitForConnectionDialog(FindRivalFrame.this, username+" Wait for another player to join");
 					Thread handlerThread=new Thread(new Thread("message-thread"){
 		        		@Override
 		        		public void run() {
@@ -74,12 +69,24 @@ public class FindRivalFrame extends JFrame{
 		        			handler.setDaemon(true);
 		        			handler.start();
 		        			try{
-			        			waitDialog.setVisible(false);
-                                GameFrame gameFrame = new GameFrame(username,rivalname,1);
-                                FindRivalFrame.this.setVisible(false);
-                                gameFrame.setLocationRelativeTo(null);
-                                gameFrame.setVisible(true);
-                                gameFrame.start();
+		        				Object respond=MessageBus.getMessageBus().waitForChannel("IN");
+		        				if("CONNECTED".equals(respond))
+		        				{
+		        					SwingUtilities.invokeLater(new Runnable() {
+										
+										@Override
+										public void run() {
+											// TODO Auto-generated method stub
+											waitDialog.setVisible(false);
+			                                GameFrame gameFrame = new GameFrame(username,rivalname,0);
+			                                FindRivalFrame.this.setVisible(false);
+			                                gameFrame.setLocationRelativeTo(null);
+			                                gameFrame.setVisible(true);
+			                                gameFrame.start();
+										}
+									});
+		        				}
+			        			
 		        			}catch (Exception ignored) {
 		        				
 	                        }
@@ -90,6 +97,7 @@ public class FindRivalFrame extends JFrame{
 					 handlerThread.start();
 					 FindRivalFrame.this.setVisible(false);
 					 waitDialog.setVisible(true);
+					 
 				}
 			});
         	joinButton.addActionListener(new ActionListener() {
@@ -126,7 +134,7 @@ public class FindRivalFrame extends JFrame{
 	                                        if (threadGroup != null)
 	                                            threadGroup.interrupt();
 	                                        waitDialog.setVisible(false);
-	                                        GameFrame gameFrame = new GameFrame(username,rivalname,2);
+	                                        GameFrame gameFrame = new GameFrame(username,rivalname,1);
 	                                        FindRivalFrame.this.setVisible(false);
 	                                        gameFrame.setLocationRelativeTo(null);
 	                                        gameFrame.setVisible(true);
@@ -164,6 +172,15 @@ public class FindRivalFrame extends JFrame{
                 }
             });
         	add(new JScrollPane(list),BorderLayout.CENTER);
+        	addWindowListener(new WindowAdapter() {
+        		@Override
+        		public void windowClosed(WindowEvent e) {
+        			// TODO Auto-generated method stub
+        			super.windowClosed(e);
+        			System.err.println("Exit when finding the rival");
+        			System.exit(0);
+        		}
+			});
         	pack();
         	setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         	setLocationRelativeTo(null);

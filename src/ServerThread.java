@@ -29,7 +29,7 @@ public class ServerThread extends Thread{
         BlockingQueue<Object> out = MessageBus.getMessageBus().getOrCreateChannel("OUT");
         try (ServerSocket serverSocket = new ServerSocket(GAME_PORT);
              Socket socket = serverSocket.accept();){
-        	 in.put("BLACK IN");
+        	 in.put("CONNECTED");
         	 while(!this.isInterrupted()){
         		 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), Charset.forName("UTF-8")));
                  BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), Charset.forName("UTF-8")));

@@ -33,7 +33,7 @@ public class Broadcast extends Thread{
             socket.send(new DatagramPacket(data, data.length, address, DISCOVERY_PORT));
         } catch (Exception ex) {
         	System.err.println(ex);
-        	System.err.println("Fail to broadcast to " + address);
+        	System.err.println("Fail to send broadcast to " + address);
         }
     }
     

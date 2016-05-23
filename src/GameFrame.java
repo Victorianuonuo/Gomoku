@@ -100,6 +100,7 @@ public class GameFrame extends JFrame{
 				}
 			}
 		});
+		titlePanel=new JPanel();
 		titlePanel.setLayout(new GridLayout(1, 3));
 		titlePanel.add(new JLabel());
 		titlePanel.add(new JLabel());
@@ -114,6 +115,7 @@ public class GameFrame extends JFrame{
 				System.exit(1);
 			}
 		});
+		messageArea=new JTextArea();
 		add(messageArea, BorderLayout.EAST);
 		pack();
 	}

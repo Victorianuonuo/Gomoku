@@ -30,7 +30,7 @@ public class ClientThread extends Thread{
 		BlockingQueue<Object> out = MessageBus.getMessageBus().getOrCreateChannel("OUT");
         BlockingQueue<Object> in = MessageBus.getMessageBus().getOrCreateChannel("IN");
         try (Socket socket = new Socket(address, GAME_PORT);) {
-            in.put("CONNECTED");
+            in.put("SUCCESSFUL");
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), Charset.forName("UTF-8")));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), Charset.forName("UTF-8")));
             while (!this.isInterrupted()) {
