@@ -23,9 +23,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 public class FindRivalFrame extends JFrame{
-	    JLabel userLabel,vsLabel,rivalLabel;
-	    JPanel titlePanel,buttonPanel;
-	    JButton createButton,joinButton;
+	    private JLabel userLabel,vsLabel,rivalLabel;
+	    private JPanel titlePanel,buttonPanel;
+	    private JButton createButton,joinButton;
 	    private ThreadGroup threadGroup;
 	    private DefaultListModel<Rivals> model;
 	    private Rivals rivalTobe;
@@ -74,13 +74,13 @@ public class FindRivalFrame extends JFrame{
 		        			handler.setDaemon(true);
 		        			handler.start();
 		        			try{
-		        				Board gameFrame=new Board();
-			        			gameFrame.setTurn(true);
+		        				GameFrame gameFrame=new GameFrame();
+			        			gameFrame.setMove(true);
 			        			gameFrame.setVisible(true);
 			        			gameFrame.start();
 			        			waitDialog.setVisible(false);
 			        			waitDialog.dispose();
-		        			}catch (InterruptedException ignored) {
+		        			}catch (Exception ignored) {
 		        				
 	                        }
 		        			handler.interrupt();
