@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.ObjectOutputStream.PutField;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +19,8 @@ public class Board extends JComponent{
     private final int CELL_SIZE = 30;
     private final int CIRCLE_RADIUS = 12;
     private Map<Point, Integer> points = new HashMap<>();
-    private Check ck;
+    private boolean end=false;
+    private Put put;
     
     public Board() {
 		// TODO Auto-generated constructor stub
@@ -54,20 +56,27 @@ public class Board extends JComponent{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
+				if(end)
+					return;
 				int xx = e.getX() - CELL_SIZE / 2;
                 int yy = e.getY() - CELL_SIZE / 2;
                 int x = (xx + CELL_SIZE / 2) / CELL_SIZE;
                 int y = (yy + CELL_SIZE / 2) / CELL_SIZE;
                 if (x >= 0 && x < 19 && y >= 0 && y < 19 && x * CELL_SIZE - CIRCLE_RADIUS <= xx && x * CELL_SIZE + CIRCLE_RADIUS >= xx &&
                         y * CELL_SIZE - CIRCLE_RADIUS <= yy && y * CELL_SIZE + CIRCLE_RADIUS >= yy)
-                    if (ck!=null) {
-                        	if(ck.check(x, y, points))
-                        		Board.this.repaint();
-                    }
+                if(put!=null){
+                	if(put.canPut(x, y, points))
+                     Board.this.repaint();
+                }
+                	
 			}
 		});
     	
     	
+	}
+    
+    public void setEnd(boolean end) {
+		this.end = end;
 	}
     
     public Map<Point, Integer> getPoints() {
@@ -93,16 +102,16 @@ public class Board extends JComponent{
         }
     }
     
-    public Check getCheck(){
-    	return ck;
+    public Put getPut(){
+    	return put;
     }
     
-    public void setCheck(Check ck){
-    	this.ck=ck;
+    public void setPut(Put put){
+    	this.put=put;
     }
 	
-    public interface Check {
-		boolean check(int x, int y, Map<Point, Integer> points);
-	}
+    public interface Put{
+    	boolean canPut(int x,int y,Map<Point, Integer> points);
+    }
     
 }

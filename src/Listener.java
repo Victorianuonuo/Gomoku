@@ -37,6 +37,7 @@ public class Listener extends Thread{
                         if (parts.length > 1)
                             MessageBus.getMessageBus().getOrCreateChannel("DISCOVERY").put(new Rivals(parts[1], packet.getAddress()));
                     }
+                    System.err.println("receive "+data+" from "+packet.getAddress());
                 } catch (SocketTimeoutException ignored) {
 
                 } catch (InterruptedException e) {

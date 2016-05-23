@@ -34,19 +34,50 @@ public class GameFrame extends JFrame{
 	private JPanel titlePanel;
 	private String yourname,rivalname;
     private int place;
-    private Check check=new Check();
+    private Algorithm algo;
+    private String[] color={"BLACK","WHITE"};
     final Object lock=new Object();
-    private String[] Colors={"BLACK","WHITE"};
 	private final BlockingQueue<Object> out=MessageBus.getMessageBus().getOrCreateChannel("OUT");
 	private final BlockingQueue<Object> in=MessageBus.getMessageBus().getOrCreateChannel("IN");
 	
 	
 	
-	public GameFrame() {
+	public GameFrame(String yourname,String rivalname,int place) {
 		// TODO Auto-generated constructor stub
 		super("Five In A Row");
 		board=new Board();
+		this.yourname=yourname;
+		this.rivalname=rivalname;
+		this.place=place;
+		algo=new Algorithm(yourname,rivalname,place+1);
 		setLayout(new BorderLayout());
+		board.setPut(new Board.Put() {
+			
+			@Override
+			public boolean canPut(int x, int y, Map<Point, Integer> points) {
+				// TODO Auto-generated method stub
+				if(!end){
+				  if(canMove&&algo.place(x, y)){
+					canMove=false;
+					try{
+						out.put("PLACE "+x+" "+y);
+					}catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    points.clear();
+                    for (int i = 0; i < 19; ++i)
+                        for (int j = 0; j < 19; ++j)
+                            if (algo.map[i][j] != 0) {
+                                points.put(new Point(i, j),algo.map[i][j]);
+                            }
+                    return true;
+				  }
+				  else return false;
+				}
+				else return false;
+			}
+			
+		});
 		add(board,BorderLayout.CENTER);
 		giveupButton=new JButton("Give up");
 		giveupButton.addActionListener(new ActionListener() {
@@ -54,10 +85,15 @@ public class GameFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if(!end){
+				if(end)
+					return;
+				else{
 					end=true;
+					board.setEnd(end);
 					try{
-						
+						out.put("GIVEUP");
+						algo.setLoser(yourname+" ("+color[place]+")");
+						algo.setWinner(rivalname+" ("+color[1-place]+")");
 					}catch(Exception ex){
 						ex.printStackTrace();
 					}
@@ -91,11 +127,6 @@ public class GameFrame extends JFrame{
 		this.place=place;
 	}
 	
-	public void setName(String yourname,String rivalname){
-		this.yourname=yourname;
-		this.rivalname=rivalname;
-	}
-	
 	
 	
 	public void start(){
@@ -114,13 +145,13 @@ public class GameFrame extends JFrame{
 								SwingUtilities.invokeLater(new Runnable() {
                                     @Override
                                     public void run() {
-                                        check.move(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+                                        algo.place(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
                                         Map<Point, Integer> points = GameFrame.this.board.getPoints();
                                         points.clear();
                                         for (int i = 0; i < 19; ++i)
                                             for (int j = 0; j < 19; ++j)
-                                                if (check.map[i][j] != 0) {
-                                                    points.put(new Point(i, j), check.map[i][j]);
+                                                if (algo.map[i][j] != 0) {
+                                                  points.put(new Point(i, j), algo.map[i][j]);
                                                 }
                                         board.repaint();
                                         setMove(true);
@@ -132,8 +163,8 @@ public class GameFrame extends JFrame{
 									@Override
 									public void run() {
 										// TODO Auto-generated method stub
-										messageArea.append("END\n"+check.getLoser()+" give up\n");
-										messageArea.append("So the winner is "+check.getWinner());
+										messageArea.append("END\n"+algo.getLoser()+" give up\n");
+										messageArea.append("So the winner is "+algo.getWinner());
 									}
 								});
 								
@@ -143,7 +174,9 @@ public class GameFrame extends JFrame{
 									@Override
 									public void run() {
 										// TODO Auto-generated method stub
-										messageArea.append("END\nThe winner is "+check.getWinner()+"\n");
+										end=true;
+										board.setEnd(end);
+										messageArea.append("END\nThe winner is "+algo.getWinner()+"\n");
 										
 									}
 								});

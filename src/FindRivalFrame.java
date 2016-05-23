@@ -75,9 +75,7 @@ public class FindRivalFrame extends JFrame{
 		        			handler.start();
 		        			try{
 			        			waitDialog.setVisible(false);
-                                GameFrame gameFrame = new GameFrame();
-                                gameFrame.setName(username,rivalname);
-                                gameFrame.setPlace(0);
+                                GameFrame gameFrame = new GameFrame(username,rivalname,1);
                                 FindRivalFrame.this.setVisible(false);
                                 gameFrame.setLocationRelativeTo(null);
                                 gameFrame.setVisible(true);
@@ -128,9 +126,7 @@ public class FindRivalFrame extends JFrame{
 	                                        if (threadGroup != null)
 	                                            threadGroup.interrupt();
 	                                        waitDialog.setVisible(false);
-	                                        GameFrame gameFrame = new GameFrame();
-	                                        gameFrame.setName(username,rivalname);
-	                                        gameFrame.setPlace(1);
+	                                        GameFrame gameFrame = new GameFrame(username,rivalname,2);
 	                                        FindRivalFrame.this.setVisible(false);
 	                                        gameFrame.setLocationRelativeTo(null);
 	                                        gameFrame.setVisible(true);

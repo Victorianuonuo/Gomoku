@@ -1,16 +1,25 @@
 
-public class Check {
+public class Algorithm {
 
 	 public int[][] map = new int[20][20];   
 	 private String black,white,winner,loser;
 	 private int size=15;
+	 private int color;
 	 
-	 public Check(String black,String white) {
+	 public Algorithm(String player1,String player2,int color) {
 		// TODO Auto-generated constructor stub
-		 this.black=black;
-		 this.white=white;
+		 if(color==1)
+		 {
+			 this.black=player1;
+			 this.white=player2;
+		 }
+		 else 
+		 {
+			 this.black=player2;
+			 this.white=player1;
+		 }	 
 		 winner=loser="unkonwn";
-		 
+		 this.color=color;
 	}
 	 
 	 private boolean ck(int x,int y){
@@ -19,11 +28,11 @@ public class Check {
 		 else return false;
 	 }
 	 
-	 private boolean place(int x,int y,int color){
+	 public boolean place(int x,int y){
 		 if(!ck(x, y)||map[x][y]!=0)
 			 return false;
 		 map[x][y]=color;
-		 if(end(x, y,color))
+		 if(end(x, y))
 		 {
 			 if(color==1)
 			 {
@@ -46,7 +55,15 @@ public class Check {
 		return loser;
 	}
 	 
-	 private boolean end(int x,int y,int color){
+	 public void setWinner(String winner) {
+		this.winner = winner;
+	}
+	 
+	 public void setLoser(String loser) {
+		this.loser = loser;
+	}
+	 
+	 private boolean end(int x,int y){
 		 int ct=1,xx,yy;
 		 for(xx=x-1;xx>=0;xx--){
 			 if(map[xx][y]!=color)
