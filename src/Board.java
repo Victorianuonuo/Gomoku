@@ -22,7 +22,7 @@ public class Board extends JComponent{
     
     public Board() {
 		// TODO Auto-generated constructor stub
-    	setPreferredSize(new Dimension(CELL_SIZE * 19, CELL_SIZE * 19));
+    	setPreferredSize(new Dimension(CELL_SIZE *15, CELL_SIZE * 15));
     	setMaximumSize(getPreferredSize());
     	setMinimumSize(getPreferredSize());
     	addMouseListener(new MouseListener() {

@@ -8,12 +8,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Map;
+import java.util.PrimitiveIterator.OfDouble;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -145,12 +147,25 @@ public class GameFrame extends JFrame{
 										
 									}
 								});
-							}else if()
+							}else if(message instanceof Exception){
+								final Exception exception = (Exception) message;
+	                            SwingUtilities.invokeLater(new Runnable() {
+	                                @Override
+	                                public void run() {
+	                                    JOptionPane.showMessageDialog(GameFrame.this, exception.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+	                                    System.exit(2);
+	                                }
+	                            });
+							}
 						}
 					}
-				}
+				}catch (InterruptedException ignored) {
+
+                }
 			}
 		};
+		handler.setDaemon(true);
+		handler.start();
 	}
 	
 }
