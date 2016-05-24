@@ -31,9 +31,10 @@ public class GameFrame extends JFrame{
 	private Board board;
 	private boolean canMove=false;
 	private boolean end=false;
-	private JButton giveupButton;
-	private JTextArea messageArea;
-	private JPanel titlePanel,messagePanel;
+	private JButton giveupButton,sendButton;
+	private JTextArea messageArea,chatArea;
+	private JPanel titlePanel,messagePanel,chatPanel;
+	private JTextField typeField;
 	private String yourname;
     private int place;
     private Algorithm algo;
@@ -103,8 +104,9 @@ public class GameFrame extends JFrame{
 			}
 		});
 		titlePanel=new JPanel();
-		titlePanel.setLayout(new GridLayout(1, 3));
+		titlePanel.setLayout(new GridLayout(1, 5));
 		titlePanel.add(new JLabel(yourname+" ( "+color[place]+" ) "));
+		for(int i=1;i<4;i++)
 		titlePanel.add(new JLabel());
 		titlePanel.add(giveupButton);
 		add(titlePanel, BorderLayout.NORTH);
@@ -120,11 +122,43 @@ public class GameFrame extends JFrame{
 		messageArea=new JTextArea();
 		messageArea.setSize(300, 500);
 		messageArea.setEditable(false);
-		messageArea.append("Start the game!\nYour move:\n");
+		messageArea.append("Start the game!\nEach move:\n");
 		messagePanel=new JPanel();
 		messagePanel.setLayout(new BorderLayout());
 		messagePanel.add(new JScrollPane(messageArea),BorderLayout.CENTER);
 		add(messagePanel, BorderLayout.EAST);
+		chatArea=new JTextArea();
+		chatArea.setEditable(false);
+		chatArea.append("Say something\n");
+		chatPanel=new JPanel();
+		chatPanel.setLayout(new BorderLayout());
+		chatPanel.add(new JScrollPane(chatArea),BorderLayout.CENTER);
+		typeField=new JTextField();
+		JPanel sendPanel=new JPanel();
+		sendPanel.setLayout(new GridLayout(1, 2));
+		sendPanel.add(typeField);
+		sendButton=new JButton("Send");
+		sendPanel.add(sendButton);
+		chatPanel.add(sendPanel, BorderLayout.SOUTH);
+		sendButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(typeField.getText().isEmpty())
+					return;
+				String temp=typeField.getText();
+				typeField.setText("");
+				try {
+					in.put("SAY "+yourname+":"+temp);
+					out.put("SAY "+yourname+":"+temp);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}			
+			}
+		});
+		add(chatPanel, BorderLayout.WEST);
 		pack();
 	}
 	
@@ -211,7 +245,19 @@ public class GameFrame extends JFrame{
 										else messageArea.append("You lose...\n");
 										
 									}
-								});
+								});}
+								else if(data.startsWith("SAY")){
+									SwingUtilities.invokeLater(new Runnable() {
+										final String[] parts=data.split(" ",2);
+										@Override
+										public void run() {
+											// TODO Auto-generated method stub
+											if(parts.length>1){
+												chatArea.append(parts[1]+"\n");
+											}
+											
+										}
+									});}
 							}else if(message instanceof Exception){
 								final Exception exception = (Exception) message;
 	                            SwingUtilities.invokeLater(new Runnable() {
@@ -223,7 +269,7 @@ public class GameFrame extends JFrame{
 	                            });
 							}
 						}
-					}
+					
 				}catch (InterruptedException ignored) {
 
                 }
