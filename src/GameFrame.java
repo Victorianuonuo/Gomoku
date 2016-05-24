@@ -93,6 +93,7 @@ public class GameFrame extends JFrame{
 					end=true;
 					board.setEnd(end);
 					try{
+						in.put("GIVEUP");
 						out.put("GIVEUP");
                         algo.setEnd(true);
 					}catch(Exception ex){

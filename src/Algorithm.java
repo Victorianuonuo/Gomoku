@@ -28,19 +28,12 @@ public class Algorithm {
 		 else return false;
 	 }
 	 
-	 public boolean place(int x,int y,int color){
-		 for(int i=0;i<15;i++)
-		 {
-			 for(int j=0;j<15;j++)
-				 System.err.print(map[i][j]+" ");
-			 System.err.println();
-		 }			 
+	 public boolean place(int x,int y,int color){		 
 		 if(!ck(x, y)||map[x][y]!=0)
 			 return false;
 		 map[x][y]=color;
-		 if(end(x, y))
+		 if(color==this.color&&end(x, y))
 		 {
-			  System.err.println("The final move: "+x+" "+y);
 			  setEnd(true);
 			  setWin(true);
 		 }
