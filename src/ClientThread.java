@@ -7,12 +7,15 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 public class ClientThread extends Thread{
           
 	public static final int GAME_PORT = 13788;
     private InetAddress address;
+    private Lock lock = new ReentrantLock();
 
     public ClientThread(String name, InetAddress address) {
         super(name);
@@ -27,6 +30,7 @@ public class ClientThread extends Thread{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		lock.lock();
 		BlockingQueue<Object> out = MessageBus.getMessageBus().getOrCreateChannel("OUT");
         BlockingQueue<Object> in = MessageBus.getMessageBus().getOrCreateChannel("IN");
         try (Socket socket = new Socket(address, GAME_PORT);) {
@@ -46,7 +50,7 @@ public class ClientThread extends Thread{
                     throw new IOException("end of stream");
                 if (!line.equals("OK"))
                     in.put(line);
-                if (!line.equals("OK") || !data.equals("TICK"))
+                if (!line.equals("OK") || !data.equals("WAIT"))
                     System.err.println(data + " / " + line);
                 Thread.sleep(100);
             }
@@ -58,6 +62,11 @@ public class ClientThread extends Thread{
             }
         } catch (InterruptedException ignored) {
 
-        } 
+        } finally {
+			lock.unlock();
+			System.err.println("release the lock");
+		}
 	}
+	
+	
 }

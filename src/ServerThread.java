@@ -40,7 +40,7 @@ public class ServerThread extends Thread{
                          throw new IOException("end of stream");
                      }
 
-                     if (!line.equals("TICK")) {
+                     if (!line.equals("WAIT")) {
                          in.put(line);
                      }
                      String data = (String) out.poll();
@@ -49,7 +49,7 @@ public class ServerThread extends Thread{
                      writer.write(data);
                      writer.newLine();
                      writer.flush();
-                     if (!line.equals("TICK") || !data.equals("OK"))
+                     if (!line.equals("WAIT") || !data.equals("OK"))
                          System.err.println(line + " / " + data);
                  }
         	 }

@@ -25,7 +25,7 @@ public class Rivals {
     
 	@Override
     public String toString() {
-        return name + " (" + address + ")";
+        return name + " at " + address ;
     }
 
     @Override

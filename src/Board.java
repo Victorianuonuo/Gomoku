@@ -17,11 +17,11 @@ public class Board extends JComponent{
 	public final int BLACK = 1;
     public final int WHITE = 2;
     private final int CELL_SIZE = 30;
-    private final int CIRCLE_RADIUS = 12;
+    private final int RADIUS = 12;
     private Map<Point, Integer> points = new HashMap<>();
     private boolean end=false;
     private Put put;
-    static final Point[] BOLD_POINTS = {
+    static final Point[] STAR = {
             new Point(3, 3),
             new Point(3, 11),
             new Point(7, 7),
@@ -71,8 +71,8 @@ public class Board extends JComponent{
                 int x = (xx + CELL_SIZE / 2) / CELL_SIZE;
                 int y = (yy + CELL_SIZE / 2) / CELL_SIZE;
                 System.err.println("Click "+x+" "+y);
-                if (x >= 0 && x < 15 && y >= 0 && y < 15 && x * CELL_SIZE - CIRCLE_RADIUS <= xx && x * CELL_SIZE + CIRCLE_RADIUS >= xx &&
-                        y * CELL_SIZE - CIRCLE_RADIUS <= yy && y * CELL_SIZE + CIRCLE_RADIUS >= yy)
+                if (x >= 0 && x < 15 && y >= 0 && y < 15 && x * CELL_SIZE - RADIUS <= xx && x * CELL_SIZE + RADIUS >= xx &&
+                        y * CELL_SIZE - RADIUS <= yy && y * CELL_SIZE + RADIUS >= yy)
                 if(put!=null){
                 	if(put.canPut(x, y, points))
                      Board.this.repaint();
@@ -100,7 +100,7 @@ public class Board extends JComponent{
             g.drawLine(CELL_SIZE / 2 + i * CELL_SIZE, CELL_SIZE / 2, CELL_SIZE / 2 + i * CELL_SIZE, CELL_SIZE / 2 + CELL_SIZE * 14);
         for (int j = 0; j < 15; ++j)
             g.drawLine(CELL_SIZE / 2, CELL_SIZE / 2 + j * CELL_SIZE, CELL_SIZE / 2 + CELL_SIZE * 14, CELL_SIZE / 2 + j * CELL_SIZE);
-        for (Point point : BOLD_POINTS) {
+        for (Point point : STAR) {
             final int R = 5;
             g.fillArc(CELL_SIZE / 2 + CELL_SIZE * point.x - R, CELL_SIZE / 2 + CELL_SIZE * point.y - R, R * 2, R * 2, 0, 360);
         }
@@ -109,9 +109,9 @@ public class Board extends JComponent{
             if (entry.getValue().equals(WHITE)) {
                 g.setColor(Color.WHITE);
             } else g.setColor(Color.BLACK);
-            g.fillArc(CELL_SIZE / 2 + CELL_SIZE * point.x - CIRCLE_RADIUS, CELL_SIZE / 2 + CELL_SIZE * point.y - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2, 0, 360);
+            g.fillArc(CELL_SIZE / 2 + CELL_SIZE * point.x - RADIUS, CELL_SIZE / 2 + CELL_SIZE * point.y - RADIUS, RADIUS * 2, RADIUS * 2, 0, 360);
             g.setColor(Color.BLACK);
-            g.drawArc(CELL_SIZE / 2 + CELL_SIZE * point.x - CIRCLE_RADIUS, CELL_SIZE / 2 + CELL_SIZE * point.y - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2, 0, 360);
+            g.drawArc(CELL_SIZE / 2 + CELL_SIZE * point.x - RADIUS, CELL_SIZE / 2 + CELL_SIZE * point.y - RADIUS, RADIUS * 2, RADIUS * 2, 0, 360);
         }
     }
     
