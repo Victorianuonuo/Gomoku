@@ -14,8 +14,8 @@ import javax.swing.JFrame;
 
 public class Board extends JComponent{
 
-	public final int STATUS_BLACK = 1;
-    public final int STATUS_WHITE = 2;
+	public final int BLACK = 1;
+    public final int WHITE = 2;
     private final int CELL_SIZE = 30;
     private final int CIRCLE_RADIUS = 12;
     private Map<Point, Integer> points = new HashMap<>();
@@ -58,10 +58,12 @@ public class Board extends JComponent{
 				// TODO Auto-generated method stub
 				if(end)
 					return;
+				
 				int xx = e.getX() - CELL_SIZE / 2;
                 int yy = e.getY() - CELL_SIZE / 2;
                 int x = (xx + CELL_SIZE / 2) / CELL_SIZE;
                 int y = (yy + CELL_SIZE / 2) / CELL_SIZE;
+                System.err.println("Click "+x+" "+y);
                 if (x >= 0 && x < 16 && y >= 0 && y < 16 && x * CELL_SIZE - CIRCLE_RADIUS <= xx && x * CELL_SIZE + CIRCLE_RADIUS >= xx &&
                         y * CELL_SIZE - CIRCLE_RADIUS <= yy && y * CELL_SIZE + CIRCLE_RADIUS >= yy)
                 if(put!=null){
@@ -93,7 +95,7 @@ public class Board extends JComponent{
             g.drawLine(CELL_SIZE / 2, CELL_SIZE / 2 + j * CELL_SIZE, CELL_SIZE / 2 + CELL_SIZE * 15, CELL_SIZE / 2 + j * CELL_SIZE);
         for (Map.Entry<Point, Integer> entry : points.entrySet()) {
             Point point = entry.getKey();
-            if (entry.getValue().equals(STATUS_WHITE)) {
+            if (entry.getValue().equals(WHITE)) {
                 g.setColor(Color.WHITE);
             } else g.setColor(Color.BLACK);
             g.fillArc(CELL_SIZE / 2 + CELL_SIZE * point.x - CIRCLE_RADIUS, CELL_SIZE / 2 + CELL_SIZE * point.y - CIRCLE_RADIUS, CIRCLE_RADIUS * 2, CIRCLE_RADIUS * 2, 0, 360);

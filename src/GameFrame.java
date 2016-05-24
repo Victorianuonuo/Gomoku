@@ -34,7 +34,7 @@ public class GameFrame extends JFrame{
 	private JButton giveupButton;
 	private JTextArea messageArea;
 	private JPanel titlePanel,messagePanel;
-	private String yourname,rivalname;
+	private String yourname;
     private int place;
     private Algorithm algo;
     private String[] color={"BLACK","WHITE"};
@@ -44,14 +44,13 @@ public class GameFrame extends JFrame{
 	
 	
 	
-	public GameFrame(String yourname,String rivalname,int place) {
+	public GameFrame(String yourname,int place) {
 		// TODO Auto-generated constructor stub
 		super("Five In A Row");
 		board=new Board();
 		this.yourname=yourname;
-		this.rivalname=rivalname;
 		this.place=place;
-		algo=new Algorithm(yourname,rivalname,place+1);
+		algo=new Algorithm(yourname,place+1);
 		setLayout(new BorderLayout());
 		board.setPut(new Board.Put() {
 			
@@ -59,16 +58,17 @@ public class GameFrame extends JFrame{
 			public boolean canPut(int x, int y, Map<Point, Integer> points) {
 				// TODO Auto-generated method stub
 				if(!end){
-				  if(canMove&&algo.place(x, y)){
+				  if(canMove&&algo.place(x, y,place+1)){
 					canMove=false;
 					try{
-						out.put("PLACE "+x+" "+y);
+                        in.put("PLACE "+x+" "+y+" "+yourname);
+						out.put("PLACE "+x+" "+y+" "+yourname);
 					}catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     points.clear();
-                    for (int i = 0; i < 19; ++i)
-                        for (int j = 0; j < 19; ++j)
+                    for (int i = 0; i < 15; ++i)
+                        for (int j = 0; j < 15; ++j)
                             if (algo.map[i][j] != 0) {
                                 points.put(new Point(i, j),algo.map[i][j]);
                             }
@@ -94,17 +94,16 @@ public class GameFrame extends JFrame{
 					board.setEnd(end);
 					try{
 						out.put("GIVEUP");
-						algo.setLoser(yourname+" ("+color[place]+")");
-						algo.setWinner(rivalname+" ("+color[1-place]+")");
+                        algo.setEnd(true);
 					}catch(Exception ex){
-						ex.printStackTrace();
+		                ex.printStackTrace();
 					}
 				}
 			}
 		});
 		titlePanel=new JPanel();
 		titlePanel.setLayout(new GridLayout(1, 3));
-		titlePanel.add(new JLabel(yourname+" ( "+color[place]+" ) "+" vs "+rivalname+" ( "+color[1-place]+" ) "));
+		titlePanel.add(new JLabel(yourname+" ( "+color[place]+" ) "));
 		titlePanel.add(new JLabel());
 		titlePanel.add(giveupButton);
 		add(titlePanel, BorderLayout.NORTH);
@@ -120,7 +119,7 @@ public class GameFrame extends JFrame{
 		messageArea=new JTextArea();
 		messageArea.setSize(300, 500);
 		messageArea.setEditable(false);
-		messageArea.append("Start the game!\n");
+		messageArea.append("Start the game!\nYour move:\n");
 		messagePanel=new JPanel();
 		messagePanel.setLayout(new BorderLayout());
 		messagePanel.add(new JScrollPane(messageArea),BorderLayout.CENTER);
@@ -155,17 +154,29 @@ public class GameFrame extends JFrame{
 								SwingUtilities.invokeLater(new Runnable() {
                                     @Override
                                     public void run() {
-                                        algo.place(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+                                        algo.place(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), 2-place);
                                         Map<Point, Integer> points = GameFrame.this.board.getPoints();
                                         points.clear();
-                                        for (int i = 0; i < 19; ++i)
-                                            for (int j = 0; j < 19; ++j)
+                                        for (int i = 0; i < 15; ++i)
+                                            for (int j = 0; j < 15; ++j)
                                                 if (algo.map[i][j] != 0) {
                                                   points.put(new Point(i, j), algo.map[i][j]);
                                                 }
                                         board.repaint();
+                                        if(!parts[3].equals(yourname))
                                         setMove(true);
-                                        messageArea.append("PLACE "+parts[1]+" "+parts[2]+"\n");
+                                        int xx=Integer.parseInt(parts[1])+1,yy=Integer.parseInt(parts[2])+1;
+                                        messageArea.append(parts[3]+":\n"+" PLACE "+xx+" "+yy+"\n");
+                                        if(algo.isEnd()){
+                                        	try {
+                                        		in.put("END");
+												out.put("END");
+											} catch (InterruptedException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+                                        	
+                                        }
                                     }
                                 });
 							}else if(data.startsWith("GIVEUP")){
@@ -174,8 +185,13 @@ public class GameFrame extends JFrame{
 									@Override
 									public void run() {
 										// TODO Auto-generated method stub
-										messageArea.append("END\n"+algo.getLoser()+" give up\n");
-										messageArea.append("So the winner is "+algo.getWinner());
+										messageArea.append("END\n");
+										if(algo.isEnd())
+											messageArea.append("You give up!\n So you lose!");
+										else 
+											messageArea.append("The other side give up!\n So you win!");
+										end=true;
+										board.setEnd(end);
 									}
 								});
 								
@@ -187,7 +203,11 @@ public class GameFrame extends JFrame{
 										// TODO Auto-generated method stub
 										end=true;
 										board.setEnd(end);
-										messageArea.append("END\nThe winner is "+algo.getWinner()+"\n");
+										System.err.println(" END ");
+										messageArea.append("END\n");
+										if(algo.isWin())
+											messageArea.append("You win! \nCongratulations!\n");
+										else messageArea.append("You lose...\n");
 										
 									}
 								});

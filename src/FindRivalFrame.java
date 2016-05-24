@@ -78,10 +78,11 @@ public class FindRivalFrame extends JFrame{
 										public void run() {
 											// TODO Auto-generated method stub
 											waitDialog.setVisible(false);
-			                                GameFrame gameFrame = new GameFrame(username,rivalname,0);
+			                                GameFrame gameFrame = new GameFrame(username,0);
 			                                FindRivalFrame.this.setVisible(false);
 			                                gameFrame.setLocationRelativeTo(null);
 			                                gameFrame.setVisible(true);
+			                                gameFrame.setMove(true);
 			                                gameFrame.start();
 										}
 									});
@@ -134,7 +135,7 @@ public class FindRivalFrame extends JFrame{
 	                                        if (threadGroup != null)
 	                                            threadGroup.interrupt();
 	                                        waitDialog.setVisible(false);
-	                                        GameFrame gameFrame = new GameFrame(username,rivalname,1);
+	                                        GameFrame gameFrame = new GameFrame(username,1);
 	                                        System.err.println(username+" vs "+rivalname);
 	                                        FindRivalFrame.this.setVisible(false);
 	                                        gameFrame.setLocationRelativeTo(null);

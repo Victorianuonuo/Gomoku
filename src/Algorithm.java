@@ -2,24 +2,24 @@
 public class Algorithm {
 
 	 public int[][] map = new int[20][20];   
-	 private String black,white,winner,loser;
+	 private String player;
 	 private int size=15;
 	 private int color;
+	 private boolean win=false,end=false;
 	 
-	 public Algorithm(String player1,String player2,int color) {
+	 public Algorithm(String player,int color) {
 		// TODO Auto-generated constructor stub
 		 if(color==1)
 		 {
-			 this.black=player1;
-			 this.white=player2;
+			 this.player=player;
 		 }
 		 else 
 		 {
-			 this.black=player2;
-			 this.white=player1;
+			 this.player=player;
 		 }	 
-		 winner=loser="unkonwn";
 		 this.color=color;
+		 win=false;
+		 end=false;
 	}
 	 
 	 private boolean ck(int x,int y){
@@ -28,40 +28,41 @@ public class Algorithm {
 		 else return false;
 	 }
 	 
-	 public boolean place(int x,int y){
+	 public boolean place(int x,int y,int color){
+		 for(int i=0;i<15;i++)
+		 {
+			 for(int j=0;j<15;j++)
+				 System.err.print(map[i][j]+" ");
+			 System.err.println();
+		 }			 
 		 if(!ck(x, y)||map[x][y]!=0)
 			 return false;
 		 map[x][y]=color;
 		 if(end(x, y))
 		 {
-			 if(color==1)
-			 {
-				 winner=black+" ( black ) ";
-				 loser=white+" ( white ) ";
-			 }				
-			 else{
-				 winner=white+" ( white ) ";
-				 loser=black+" ( black ) ";
-			 }			 
+			  System.err.println("The final move: "+x+" "+y);
+			  setEnd(true);
+			  setWin(true);
 		 }
 		 return true;
 	 }
 	 
-	 public String getWinner() {
-		return winner;
+     public void setWin(boolean win) {
+		this.win = win;
 	}
-	 
-	 public String getLoser() {
-		return loser;
+     
+     public boolean isWin() {
+		return win;
 	}
-	 
-	 public void setWinner(String winner) {
-		this.winner = winner;
+     
+     public void setEnd(boolean end) {
+		this.end = end;
 	}
-	 
-	 public void setLoser(String loser) {
-		this.loser = loser;
+     
+     public boolean isEnd() {
+		return end;
 	}
+     
 	 
 	 private boolean end(int x,int y){
 		 int ct=1,xx,yy;
