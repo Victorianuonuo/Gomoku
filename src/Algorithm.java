@@ -36,12 +36,12 @@ public class Algorithm {
 		 {
 			 if(color==1)
 			 {
-				 winner=black+" (black)";
-				 loser=white+" (white)";
+				 winner=black+" ( black ) ";
+				 loser=white+" ( white ) ";
 			 }				
 			 else{
-				 winner=white+" (white)";
-				 loser=black+" (black)";
+				 winner=white+" ( white ) ";
+				 loser=black+" ( black ) ";
 			 }			 
 		 }
 		 return true;

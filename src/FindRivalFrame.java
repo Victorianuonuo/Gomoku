@@ -117,7 +117,7 @@ public class FindRivalFrame extends JFrame{
 		        		public void run() {
 		        			// TODO Auto-generated method stub
 		        			try {
-	                            final Object respond = MessageBus.getMessageBus().waitForChannel("OK");
+	                            final Object respond = MessageBus.getMessageBus().waitForChannel("IN");
 	                            System.err.println(respond);
 	                            if (respond instanceof Exception) {
 	                                SwingUtilities.invokeLater(new Runnable() {
@@ -135,6 +135,7 @@ public class FindRivalFrame extends JFrame{
 	                                            threadGroup.interrupt();
 	                                        waitDialog.setVisible(false);
 	                                        GameFrame gameFrame = new GameFrame(username,rivalname,1);
+	                                        System.err.println(username+" vs "+rivalname);
 	                                        FindRivalFrame.this.setVisible(false);
 	                                        gameFrame.setLocationRelativeTo(null);
 	                                        gameFrame.setVisible(true);

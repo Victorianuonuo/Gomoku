@@ -24,7 +24,7 @@ public class Board extends JComponent{
     
     public Board() {
 		// TODO Auto-generated constructor stub
-    	setPreferredSize(new Dimension(CELL_SIZE *15, CELL_SIZE * 15));
+    	setPreferredSize(new Dimension(CELL_SIZE *16, CELL_SIZE * 16));
     	setMaximumSize(getPreferredSize());
     	setMinimumSize(getPreferredSize());
     	addMouseListener(new MouseListener() {
@@ -62,7 +62,7 @@ public class Board extends JComponent{
                 int yy = e.getY() - CELL_SIZE / 2;
                 int x = (xx + CELL_SIZE / 2) / CELL_SIZE;
                 int y = (yy + CELL_SIZE / 2) / CELL_SIZE;
-                if (x >= 0 && x < 19 && y >= 0 && y < 19 && x * CELL_SIZE - CIRCLE_RADIUS <= xx && x * CELL_SIZE + CIRCLE_RADIUS >= xx &&
+                if (x >= 0 && x < 16 && y >= 0 && y < 16 && x * CELL_SIZE - CIRCLE_RADIUS <= xx && x * CELL_SIZE + CIRCLE_RADIUS >= xx &&
                         y * CELL_SIZE - CIRCLE_RADIUS <= yy && y * CELL_SIZE + CIRCLE_RADIUS >= yy)
                 if(put!=null){
                 	if(put.canPut(x, y, points))
@@ -87,10 +87,10 @@ public class Board extends JComponent{
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.clearRect(0, 0, this.getWidth(), this.getHeight());
-        for (int i = 0; i < 19; ++i)
-            g.drawLine(CELL_SIZE / 2 + i * CELL_SIZE, CELL_SIZE / 2, CELL_SIZE / 2 + i * CELL_SIZE, CELL_SIZE / 2 + CELL_SIZE * 18);
-        for (int j = 0; j < 19; ++j)
-            g.drawLine(CELL_SIZE / 2, CELL_SIZE / 2 + j * CELL_SIZE, CELL_SIZE / 2 + CELL_SIZE * 18, CELL_SIZE / 2 + j * CELL_SIZE);
+        for (int i = 0; i < 16; ++i)
+            g.drawLine(CELL_SIZE / 2 + i * CELL_SIZE, CELL_SIZE / 2, CELL_SIZE / 2 + i * CELL_SIZE, CELL_SIZE / 2 + CELL_SIZE * 15);
+        for (int j = 0; j < 16; ++j)
+            g.drawLine(CELL_SIZE / 2, CELL_SIZE / 2 + j * CELL_SIZE, CELL_SIZE / 2 + CELL_SIZE * 15, CELL_SIZE / 2 + j * CELL_SIZE);
         for (Map.Entry<Point, Integer> entry : points.entrySet()) {
             Point point = entry.getKey();
             if (entry.getValue().equals(STATUS_WHITE)) {

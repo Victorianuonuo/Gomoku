@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.Point;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -17,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -31,7 +33,7 @@ public class GameFrame extends JFrame{
 	private boolean end=false;
 	private JButton giveupButton;
 	private JTextArea messageArea;
-	private JPanel titlePanel;
+	private JPanel titlePanel,messagePanel;
 	private String yourname,rivalname;
     private int place;
     private Algorithm algo;
@@ -102,7 +104,7 @@ public class GameFrame extends JFrame{
 		});
 		titlePanel=new JPanel();
 		titlePanel.setLayout(new GridLayout(1, 3));
-		titlePanel.add(new JLabel());
+		titlePanel.add(new JLabel(yourname+" ( "+color[place]+" ) "+" vs "+rivalname+" ( "+color[1-place]+" ) "));
 		titlePanel.add(new JLabel());
 		titlePanel.add(giveupButton);
 		add(titlePanel, BorderLayout.NORTH);
@@ -116,7 +118,13 @@ public class GameFrame extends JFrame{
 			}
 		});
 		messageArea=new JTextArea();
-		add(messageArea, BorderLayout.EAST);
+		messageArea.setSize(300, 500);
+		messageArea.setEditable(false);
+		messageArea.append("Start the game!\n");
+		messagePanel=new JPanel();
+		messagePanel.setLayout(new BorderLayout());
+		messagePanel.add(new JScrollPane(messageArea),BorderLayout.CENTER);
+		add(messagePanel, BorderLayout.EAST);
 		pack();
 	}
 	
@@ -142,7 +150,7 @@ public class GameFrame extends JFrame{
 						System.err.println(message);
 						if(message instanceof String){
 							String data=(String) message;
-							if(data.startsWith("MOVE")){
+							if(data.startsWith("PLACE")){
 								final String[] parts=data.split("\\s+");
 								SwingUtilities.invokeLater(new Runnable() {
                                     @Override
@@ -157,6 +165,7 @@ public class GameFrame extends JFrame{
                                                 }
                                         board.repaint();
                                         setMove(true);
+                                        messageArea.append("PLACE "+parts[1]+" "+parts[2]+"\n");
                                     }
                                 });
 							}else if(data.startsWith("GIVEUP")){

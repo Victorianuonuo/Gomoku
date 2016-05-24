@@ -25,6 +25,13 @@ public class MessageBus {
 	    }
 
 	    public Object waitForChannel(String channel) throws InterruptedException {
-	        return getOrCreateChannel(channel).take();
+	    	Object temp=getOrCreateChannel(channel).take();
+	    	System.err.println(channel);
+	    	try{
+	    		System.err.println(temp.toString());
+	    	}catch(Exception ignored){
+	    		System.err.println(ignored);
+	    	}
+	        return temp;
 	    }
 }
