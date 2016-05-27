@@ -11,4 +11,10 @@ Gomoku/Five In A Row
 	 
 AUTHOR
 =============
-     * Ouyang Siqi 
+     * Ouyang Siqi
+
+#REFERENCES
+=============
+     *https://github.com/Brioal/Game
+     *https://github.com/IndeedPlusPlus/java-weiqi
+
