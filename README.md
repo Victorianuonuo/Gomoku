@@ -9,6 +9,7 @@ Gomoku/Five In A Row
 	 也可以放弃认输，结束游戏。
 
 	 
+<<<<<<< HEAD
 AUTHOR
 =============
      * Ouyang Siqi
@@ -17,4 +18,5 @@ AUTHOR
 =============
      *https://github.com/Brioal/Game
      *https://github.com/IndeedPlusPlus/java-weiqi
+
 
