@@ -9,7 +9,6 @@ Gomoku/Five In A Row
 	 也可以放弃认输，结束游戏。
 
 	 
-<<<<<<< HEAD
 AUTHOR
 =============
      * Ouyang Siqi
