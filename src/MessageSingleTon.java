@@ -3,14 +3,14 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class MessageBus {
-	 private final static MessageBus messageBus = new MessageBus();
+public class MessageSingleTon {
+	 private final static MessageSingleTon instance = new MessageSingleTon();
 
 	    private final Map<String, BlockingQueue<Object>> channels = new HashMap<>();
 
 
-	    public static MessageBus getMessageBus() {
-	        return messageBus;
+	    public static MessageSingleTon getInstance() {
+	        return instance;
 	    }
 
 	    public BlockingQueue<Object> getOrCreateChannel(String channel) {

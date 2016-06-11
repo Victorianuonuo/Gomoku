@@ -123,8 +123,5 @@ public class Board extends JComponent{
     	this.put=put;
     }
 	
-    public interface Put{
-    	boolean canPut(int x,int y,Map<Point, Integer> points);
-    }
     
 }

@@ -25,8 +25,8 @@ public class ServerThread extends Thread{
     @Override
     public void run() {
     	// TODO Auto-generated method stub
-    	BlockingQueue<Object> in = MessageBus.getMessageBus().getOrCreateChannel("IN");
-        BlockingQueue<Object> out = MessageBus.getMessageBus().getOrCreateChannel("OUT");
+    	BlockingQueue<Object> in = MessageSingleTon.getInstance().getOrCreateChannel("IN");
+        BlockingQueue<Object> out = MessageSingleTon.getInstance().getOrCreateChannel("OUT");
         try (ServerSocket serverSocket = new ServerSocket(GAME_PORT);
              Socket socket = serverSocket.accept();){
         	 in.put("CONNECTED");

@@ -40,8 +40,8 @@ public class GameFrame extends JFrame{
     private Algorithm algo;
     private String[] color={"BLACK","WHITE"};
     final Object lock=new Object();
-	private final BlockingQueue<Object> out=MessageBus.getMessageBus().getOrCreateChannel("OUT");
-	private final BlockingQueue<Object> in=MessageBus.getMessageBus().getOrCreateChannel("IN");
+	private final BlockingQueue<Object> out=MessageSingleTon.getInstance().getOrCreateChannel("OUT");
+	private final BlockingQueue<Object> in=MessageSingleTon.getInstance().getOrCreateChannel("IN");
 	
 	
 	
@@ -53,7 +53,7 @@ public class GameFrame extends JFrame{
 		this.place=place;
 		algo=new Algorithm(yourname,place+1);
 		setLayout(new BorderLayout());
-		board.setPut(new Board.Put() {
+		board.setPut(new Put() {
 			
 			@Override
 			public boolean canPut(int x, int y, Map<Point, Integer> points) {

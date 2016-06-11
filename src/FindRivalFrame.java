@@ -69,7 +69,7 @@ public class FindRivalFrame extends JFrame{
 		        			handler.setDaemon(true);
 		        			handler.start();
 		        			try{
-		        				Object respond=MessageBus.getMessageBus().waitForChannel("IN");
+		        				Object respond=MessageSingleTon.getInstance().waitForChannel("IN");
 		        				if("CONNECTED".equals(respond))
 		        				{
 		        					SwingUtilities.invokeLater(new Runnable() {
@@ -118,7 +118,7 @@ public class FindRivalFrame extends JFrame{
 		        		public void run() {
 		        			// TODO Auto-generated method stub
 		        			try {
-	                            final Object respond = MessageBus.getMessageBus().waitForChannel("IN");
+	                            final Object respond = MessageSingleTon.getInstance().waitForChannel("IN");
 	                            System.err.println(respond);
 	                            if (respond instanceof Exception) {
 	                                SwingUtilities.invokeLater(new Runnable() {
@@ -202,7 +202,7 @@ public class FindRivalFrame extends JFrame{
         			// TODO Auto-generated method stub
         			while(!this.isInterrupted()){
         				try{
-        					Rivals rival=(Rivals)MessageBus.getMessageBus().waitForChannel("Seeking");
+        					Rivals rival=(Rivals)MessageSingleTon.getInstance().waitForChannel("Seeking");
         					synchronized (timeToTrace) {
 								timeToTrace.put(rival,(new Date()).getTime());
 							}

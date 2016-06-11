@@ -32,7 +32,7 @@ public class Listener extends Thread{
                     if (data.startsWith("Start the game by")) {
                         String[] parts = data.split(" ",5);
                         if (parts.length > 4)
-                            MessageBus.getMessageBus().getOrCreateChannel("Seeking").put(new Rivals(parts[4], packet.getAddress()));
+                            MessageSingleTon.getInstance().getOrCreateChannel("Seeking").put(new Rivals(parts[4], packet.getAddress()));
                     }
                     System.err.println("receive "+data+" from "+packet.getAddress());
                 } catch (SocketTimeoutException ignored) {

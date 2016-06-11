@@ -31,8 +31,8 @@ public class ClientThread extends Thread{
 	public void run() {
 		// TODO Auto-generated method stub
 		lock.lock();
-		BlockingQueue<Object> out = MessageBus.getMessageBus().getOrCreateChannel("OUT");
-        BlockingQueue<Object> in = MessageBus.getMessageBus().getOrCreateChannel("IN");
+		BlockingQueue<Object> out = MessageSingleTon.getInstance().getOrCreateChannel("OUT");
+        BlockingQueue<Object> in = MessageSingleTon.getInstance().getOrCreateChannel("IN");
         try (Socket socket = new Socket(address, GAME_PORT);) {
             in.put("SUCCESSFUL");
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), Charset.forName("UTF-8")));
